@@ -5,62 +5,98 @@
  */
 package arboles;
 
+import java.util.Scanner;
+
 /**
  *
  * @author Salas
  */
 public class Arboles {
 
-    Nodo raiz = null;
+    private Nodo head;
+    private Nodo cola;
 
-    public Arboles(int valor) {
-        this.raiz = new Nodo(valor);
+    /**
+     * @param args the command line arguments
+     */
+
+    public Arboles() {
+        this.head = null;
+        this.cola = null;
     }
 
-    public void addNodo(Nodo raiz, int valor) {
-        Nodo nuevo = new Nodo(valor);
-        Nodo actual = raiz;
-
-        if (arbolVacio()) {
-            raiz = nuevo;
+    public void addNodo(Nodo actual, int dato) {
+        if (actual == null) {
+            Nodo nuevo = new Nodo(dato);
+            actual = nuevo;
         } else {
-            if (nuevo.valor < actual.valor) {
-                addNodo(actual.izq, nuevo.valor);
-
+            if (dato > actual.valor) {
+                addNodo(actual.der, dato);
             } else {
-                addNodo(actual.der, nuevo.valor);
+                addNodo(actual.izq, dato);
             }
         }
     }
 
-    public void addNodo2(Nodo raiz, int valor) {
-        Nodo nuevo = new Nodo(valor);
-        Nodo actual = raiz;
+    public static void preOrden(Nodo actual) {
+        if (actual != null) {
+            System.out.println(actual.valor + "-");
+            preOrden(actual.izq);
+            preOrden(actual.der);
+        }
 
-        if (arbolVacio()) {
-            raiz = nuevo;
-        } else {
-            if (nuevo.valor < actual.valor) {
-                if (actual.izq == null) {
-                    actual.izq = nuevo;
-                } else {
-                    addNodo2(actual.izq, nuevo.valor);
-                }
+    }
+    
+    public static void eliminar(Nodo actual, int valor) {
+        if ((actual.valor != valor) && (actual != null)) {
+            if (valor > actual.valor) {
+                eliminar(actual.der, valor);
             } else {
-                if (actual.der == null) {
-                    actual.der = nuevo;
+                eliminar(actual.izq, valor);
+            }
+
+        } else {
+            if ((actual.der == null) && (actual.izq == null)) {
+                actual = null;
+            } else {
+                if (actual.izq != null) {
+                    Nodo aux = actual.izq;
+                    while (aux.der != null) {
+                        aux = aux.der;
+                    }
+                    actual.valor = aux.valor;
+                    aux = aux.izq;
                 } else {
-                    addNodo2(actual.der, nuevo.valor);
+                    Nodo aux = actual.der;
+                    while (aux.izq != null) {
+                        aux = aux.izq;
+                    }
+                    actual.valor = aux.valor;
+                    aux = aux.izq;
                 }
             }
         }
     }
-
-    public boolean arbolVacio() {
-        boolean continuar = false;
-        if (raiz == null) {
-            continuar = true;
-        }
-        return continuar;
+    public static void main(String[] args) {
+        // TODO code application logic here
+        Scanner input = new Scanner(System.in);
+        Arboles arb = new Arboles();
+        int op, elem = 0;
+        Nodo head = null;
+        do {
+            System.out.println("1. Ingrese nuevo nodo\n2. Listar");
+            System.out.print(" --> ");
+            op = input.nextInt();
+            switch (op) {
+                case 1:
+                    System.out.print("Elemento: ");
+                    elem = input.nextInt();
+                    arb.addNodo(head, elem);
+                    break;
+                case 2:
+                        Arboles.preOrden();
+                    break;
+            }
+        } while (op > 0 && op < 3);
     }
 }
